@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aiml>
 	<category>
-		<pattern>WHAT IS JAVA</pattern>
-		<template>Java is a programming language.</template>
+		<pattern>MY NAME IS *</pattern>
+		<template>
+		Hello!<name><set name="username"> <star/></set></think>
+		</template>
 	</category>
 	<category>
 		<pattern>WHAT IS CHAT BOT</pattern>
