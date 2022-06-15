@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Chatbot.ChatbotAI.Chatbot.Chatbot;
+
 public class GUI implements ActionListener
 {
 	JFrame frame;
@@ -70,7 +72,10 @@ public class GUI implements ActionListener
 	        {
 	            if(e.getKeyCode() == KeyEvent.VK_ENTER) 
 	            {
-	                System.out.println(2);
+	            	Chatbot cb=new Chatbot();
+	    			cb.setInput(inputField.getText());
+	    			cb.runChatbot();
+	    			inputField.setText("");
 	            }
 	        }
 		});
@@ -99,7 +104,10 @@ public class GUI implements ActionListener
 	{
 		if(e.getSource()==sendButton)
 		{
-			System.out.println(0);
+			Chatbot cb=new Chatbot();
+			cb.setInput(inputField.getText());
+			cb.runChatbot();
+			inputField.setText("");
 		}
 	}
 }

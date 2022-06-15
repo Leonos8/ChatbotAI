@@ -12,11 +12,12 @@ import org.alicebot.ab.utils.IOUtils;
 public class Chatbot 
 {
 	private static final boolean TRACE_MODE=false;
-	static boolean running=true;
 	
 	static String botName="super";
+	static String textLine="";
+	String response="";
 	
-	public Chatbot()
+	public void runChatbot()
 	{
 		try {
 			String resourcesPath=getResourcesPath();
@@ -29,58 +30,70 @@ public class Chatbot
 			Chat chatSession=new Chat(bot);
 			bot.brain.nodeStats();
 			
-			String textLine="";
+			//String textLine="";
 			
-			while(running)
+			System.out.print("Human: ");
+			//textLine=IOUtils.readInputTextLine();
+				
+			if(textLine==null || (textLine.length()<1))
 			{
-				System.out.print("Human: ");
-				textLine=IOUtils.readInputTextLine();
+				textLine=MagicStrings.null_input;
+			}
 				
-				if(textLine==null || (textLine.length()<1))
-				{
-					textLine=MagicStrings.null_input;
-				}
+			if(textLine=="q")
+			{
+				System.exit(0);
+			}
+			else if(textLine=="wq")
+			{
+				bot.writeQuit();
+				System.exit(0);
+			}
+			else
+			{
+				String request=textLine;
 				
-				if(textLine=="q")
+				if(MagicBooleans.trace_mode)
 				{
-					System.exit(0);
+					System.out.println(
+							"STATE=" + request + ":THAT=" + 
+							((History) chatSession.thatHistory.get(0)).get(0) + ":TOPIC=" 
+							+ chatSession.predicates.get("topic"));
 				}
-				else if(textLine=="wq")
+					
+				response=chatSession.multisentenceRespond(request);
+					
+				while(response.contains("&lt;"))
 				{
-					bot.writeQuit();
-					System.exit(0);
+					response = response.replace("&lt;", "<");
 				}
-				else
+					
+				while(response.contains("&gt;"))
 				{
-					String request=textLine;
-					
-					if(MagicBooleans.trace_mode)
-					{
-						System.out.println(
-								"STATE=" + request + ":THAT=" + 
-						((History) chatSession.thatHistory.get(0)).get(0) + ":TOPIC=" 
-										+ chatSession.predicates.get("topic"));
-					}
-					
-					String response=chatSession.multisentenceRespond(request);
-					
-					while(response.contains("&lt;"))
-					{
-						response = response.replace("&lt;", "<");
-					}
-					
-					while(response.contains("&gt;"))
-					{
-						response = response.replace("&gt;", ">");
-					}
+					response = response.replace("&gt;", ">");
+				}
 					
 					System.out.println("Robot: "+response);
-				}
 			}
 		} catch(Exception e)
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public void setInput(String textLine)
+	{
+		this.textLine=textLine;
+	}
+	
+	public String getInput()
+	{
+		return textLine;
+	}
+	
+	public String getResponse()
+	{
+		return response;
 	}
 	
 	private static String getResourcesPath()
