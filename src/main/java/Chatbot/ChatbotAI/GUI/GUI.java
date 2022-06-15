@@ -5,12 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 
 import Chatbot.ChatbotAI.Chatbot.Chatbot;
 
@@ -24,6 +26,8 @@ public class GUI implements ActionListener
 	
 	JButton sendButton;
 	
+	JTextPane textPane;
+	
 	int width=600;
 	int height=400;
 	
@@ -32,8 +36,6 @@ public class GUI implements ActionListener
 		createFrame();
 		
 		createPanel();
-		
-		//createInputField();
 	}
 	
 	public void createFrame()
@@ -57,6 +59,7 @@ public class GUI implements ActionListener
 		
 		createInputField();
 		createSendButton();
+		createTextPane();
 	}
 	
 	public void createInputField()
@@ -72,10 +75,7 @@ public class GUI implements ActionListener
 	        {
 	            if(e.getKeyCode() == KeyEvent.VK_ENTER) 
 	            {
-	            	Chatbot cb=new Chatbot();
-	    			cb.setInput(inputField.getText());
-	    			cb.runChatbot();
-	    			inputField.setText("");
+	            	runCB();
 	            }
 	        }
 		});
@@ -96,7 +96,33 @@ public class GUI implements ActionListener
 	
 	public void createTextPane()
 	{
+		textPane=new JTextPane();
+		textPane.setEditable(false);
+		textPane.setVisible(true);
+		textPane.setBounds(15, 15, width-45, height-100);
 		
+		JScrollPane scrollPane=new JScrollPane(textPane);
+		scrollPane.setBounds(0,15,20,textPane.getHeight());
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVisible(true);
+		
+		//panel.add(textPane);
+		panel.add(scrollPane);
+	}
+	
+	public void runCB()
+	{
+		Chatbot cb=new Chatbot();
+		cb.setInput(inputField.getText());
+		cb.runChatbot();
+		
+		textPane.setText(textPane.getText()+"Human: "+cb.getInput()); //TODO change Human to saved value
+		textPane.setText(textPane.getText()+"\n");
+		
+		textPane.setText(textPane.getText()+"Robot: "+cb.getResponse());
+		textPane.setText(textPane.getText()+"\n");
+		
+		inputField.setText("");
 	}
 
 	@Override
@@ -104,10 +130,7 @@ public class GUI implements ActionListener
 	{
 		if(e.getSource()==sendButton)
 		{
-			Chatbot cb=new Chatbot();
-			cb.setInput(inputField.getText());
-			cb.runChatbot();
-			inputField.setText("");
+			runCB();
 		}
 	}
 }
