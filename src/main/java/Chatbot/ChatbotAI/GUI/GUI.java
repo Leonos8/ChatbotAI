@@ -1,11 +1,17 @@
 package Chatbot.ChatbotAI.GUI;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,17 +31,38 @@ public class GUI implements ActionListener
 	JTextField inputField;
 	
 	JButton sendButton;
+	static JButton micButton;
 	
 	JTextPane textPane;
 	
 	int width=600;
 	int height=400;
 	
+	boolean micOn=false;
+	
 	public GUI()
 	{
 		createFrame();
 		
 		createPanel();
+		
+		panel.validate();
+		frame.validate();
+	}
+	
+	public void runCB()
+	{
+		Chatbot cb=new Chatbot();
+		cb.setInput(inputField.getText());
+		cb.runChatbot();
+		
+		textPane.setText(textPane.getText()+"Human: "+cb.getInput()); //TODO change Human to saved value
+		textPane.setText(textPane.getText()+"\n");
+		
+		textPane.setText(textPane.getText()+"Robot: "+cb.getResponse());
+		textPane.setText(textPane.getText()+"\n");
+		
+		inputField.setText("");
 	}
 	
 	public void createFrame()
@@ -60,6 +87,7 @@ public class GUI implements ActionListener
 		createInputField();
 		createSendButton();
 		createTextPane();
+		createMicButton();
 	}
 	
 	public void createInputField()
@@ -99,30 +127,73 @@ public class GUI implements ActionListener
 		textPane=new JTextPane();
 		textPane.setEditable(false);
 		textPane.setVisible(true);
-		textPane.setBounds(15, 15, width-45, height-100);
 		
 		JScrollPane scrollPane=new JScrollPane(textPane);
-		scrollPane.setBounds(0,15,20,textPane.getHeight());
+		scrollPane.setBounds(15,15,width-45,height-100);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setVisible(true);
 		
-		//panel.add(textPane);
 		panel.add(scrollPane);
 	}
 	
-	public void runCB()
+	public void createMicButton()
 	{
-		Chatbot cb=new Chatbot();
-		cb.setInput(inputField.getText());
-		cb.runChatbot();
+		micButton=new JButton();
 		
-		textPane.setText(textPane.getText()+"Human: "+cb.getInput()); //TODO change Human to saved value
-		textPane.setText(textPane.getText()+"\n");
+		micButton.setBounds(70, height-70, 25, 25);
+		//micButton.setBounds(0, 0, 400, 400);
 		
-		textPane.setText(textPane.getText()+"Robot: "+cb.getResponse());
-		textPane.setText(textPane.getText()+"\n");
+		try {
+			setMicImageIcon(micOn);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		inputField.setText("");
+		micButton.addActionListener(this);
+		micButton.setVisible(true);
+		
+		panel.add(micButton);
+	}
+	
+	private static ImageIcon resizeIcon(ImageIcon icon, int resizedWidth, int resizedHeight) 
+	{
+	    Image img = icon.getImage();  
+	    Image resizedImage = img.getScaledInstance(resizedWidth, resizedHeight,  
+	    		java.awt.Image.SCALE_SMOOTH);  
+	    
+	    return new ImageIcon(resizedImage);
+	}
+	
+	private static void setMicImageIcon(boolean micOn) throws IOException
+	{
+		File currDir=new File(".");
+		
+		String path=currDir.getAbsolutePath();
+		path=path.substring(0, path.length()-2);	
+		
+		String imagePath=path+File.separator+"src"+File.separator+"main"
+				+File.separator+"resources"+File.separator+"Images"+File.separator;
+		
+		System.out.println(micOn);
+		
+		Image micOffImg=ImageIO.read(new File(imagePath+"MicOff.png"));
+	    Image micOnImg=ImageIO.read(new File(imagePath+"MicOn.png"));
+	    
+	    ImageIcon micOffImgIcon=resizeIcon(new ImageIcon(micOffImg), 20, 20);
+	    ImageIcon micOnImgIcon=resizeIcon(new ImageIcon(micOnImg), 20, 20);
+	    
+	    if(micOn)
+	    {
+	    	System.out.println(1);
+	    	micButton.setIcon(micOnImgIcon);
+	    }
+	    else
+	    {
+	    	System.out.println(2);
+
+	    	micButton.setIcon(micOffImgIcon);
+	    }
 	}
 
 	@Override
@@ -131,6 +202,34 @@ public class GUI implements ActionListener
 		if(e.getSource()==sendButton)
 		{
 			runCB();
+		}
+		
+		if(e.getSource()==micButton)
+		{
+			System.out.println(micOn);
+			
+			if(micOn)
+			{
+				micOn=false;
+				
+				try {
+					setMicImageIcon(micOn);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else
+			{
+				micOn=true;
+				
+				try {
+					setMicImageIcon(micOn);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
 }
