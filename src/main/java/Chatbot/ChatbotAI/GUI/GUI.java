@@ -46,7 +46,6 @@ public class GUI implements ActionListener
 		
 		createPanel();
 		
-		panel.validate();
 		frame.validate();
 	}
 	
@@ -175,8 +174,6 @@ public class GUI implements ActionListener
 		String imagePath=path+File.separator+"src"+File.separator+"main"
 				+File.separator+"resources"+File.separator+"Images"+File.separator;
 		
-		System.out.println(micOn);
-		
 		Image micOffImg=ImageIO.read(new File(imagePath+"MicOff.png"));
 	    Image micOnImg=ImageIO.read(new File(imagePath+"MicOn.png"));
 	    
@@ -185,13 +182,10 @@ public class GUI implements ActionListener
 	    
 	    if(micOn)
 	    {
-	    	System.out.println(1);
 	    	micButton.setIcon(micOnImgIcon);
 	    }
 	    else
 	    {
-	    	System.out.println(2);
-
 	    	micButton.setIcon(micOffImgIcon);
 	    }
 	}
@@ -206,8 +200,6 @@ public class GUI implements ActionListener
 		
 		if(e.getSource()==micButton)
 		{
-			System.out.println(micOn);
-			
 			if(micOn)
 			{
 				micOn=false;

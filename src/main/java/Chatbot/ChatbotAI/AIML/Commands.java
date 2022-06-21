@@ -8,7 +8,7 @@ public class Commands
 {
 	public static void main(String[] args) throws FileNotFoundException
 	{
-		searchInputs("WHAT IS YOUR NAME");
+		searchInputs("GOOGLE");
 	}
 	public static void searchInputs(String searchValue) throws FileNotFoundException
 	{
@@ -38,7 +38,7 @@ public class Commands
 			while(sc.hasNext())
 			{
 				//System.out.println(sc.nextLine());
-				if(sc.nextLine().contains(searchValue))
+				if(sc.nextLine().contains(searchValue.toUpperCase()))
 				{
 					System.out.println(resourcesPath+contents[i]);
 				}
