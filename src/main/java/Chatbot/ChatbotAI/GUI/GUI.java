@@ -33,12 +33,14 @@ public class GUI implements ActionListener
 	JButton sendButton;
 	static JButton micButton;
 	
-	JTextPane textPane;
+	public static JTextPane textPane;
 	
 	int width=600;
 	int height=400;
 	
 	boolean micOn=false;
+	
+	Chatbot cb=new Chatbot();
 	
 	public GUI()
 	{
@@ -51,15 +53,37 @@ public class GUI implements ActionListener
 	
 	public void runCB()
 	{
-		Chatbot cb=new Chatbot();
 		cb.setInput(inputField.getText());
-		cb.runChatbot();
 		
-		textPane.setText(textPane.getText()+"Human: "+cb.getInput()); //TODO change Human to saved value
-		textPane.setText(textPane.getText()+"\n");
+		if(cb.getAdding() && !cb.getInput().equalsIgnoreCase("yes"))
+		{
+			System.out.println(cb.getTrainBool());
+			cb.addInput(cb.getInput());
+			cb.setAdding(false);
+		}
+		else if(cb.getTrainBool() && cb.getInput().equalsIgnoreCase("yes"))
+		{
+			cb.train();
+			cb.setTrainBool(false);
+			cb.setAdding(true);
+		}
+		else if(cb.getInput().equalsIgnoreCase("no"))
+		{
+			cb.setResponse("Ok then.");
+			
+			textPane.setText(textPane.getText()+"Human: "+cb.getInput()); //TODO change Human to saved value
+			textPane.setText(textPane.getText()+"\n");
+			
+			textPane.setText(textPane.getText()+"Robot: "+cb.getResponse());
+			textPane.setText(textPane.getText()+"\n");
+		}
+		else
+		{
+			cb.runChatbot();
+		}
 		
-		textPane.setText(textPane.getText()+"Robot: "+cb.getResponse());
-		textPane.setText(textPane.getText()+"\n");
+		cb.chatHistory.add(cb.getInput());
+		cb.chatHistory.add(cb.getResponse());
 		
 		inputField.setText("");
 	}

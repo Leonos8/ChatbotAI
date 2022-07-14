@@ -1,0 +1,5 @@
+hi:Hello
+how are you doing?:I am doing well, thank you
+yes:I am not sure what you're agreeing to
+h x:y g
+How are you doing today?:I am doing well, thank you
